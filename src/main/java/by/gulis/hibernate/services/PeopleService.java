@@ -1,6 +1,7 @@
 package by.gulis.hibernate.services;
 
 
+import by.gulis.hibernate.models.Mood;
 import by.gulis.hibernate.models.Person;
 import by.gulis.hibernate.repositories.PeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,7 @@ public class PeopleService {
     @Transactional
     public void save(Person person) {
         person.setCreateAt(new Date());
+        person.setMood(Mood.CALM);
         peopleRepository.save(person);
     }
 
