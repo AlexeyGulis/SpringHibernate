@@ -2,6 +2,8 @@ package by.gulis.hibernate.controllers;
 
 import by.gulis.hibernate.dao.PersonDAO;
 import by.gulis.hibernate.models.Person;
+import by.gulis.hibernate.services.ItemService;
+import by.gulis.hibernate.services.PeopleService;
 import by.gulis.hibernate.util.PersonValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,22 +17,29 @@ import javax.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
 
-    private final PersonDAO personDAO;
+    private PeopleService peopleService;
+
+    private ItemService itemService;
 
     @Autowired
-    public PeopleController(PersonDAO personDAO, PersonValidator personValidator) {
-        this.personDAO = personDAO;
+    public PeopleController(PeopleService peopleService, ItemService itemService) {
+        this.peopleService = peopleService;
+        this.itemService = itemService;
     }
 
     @GetMapping()
     public String index(Model model) {
-        model.addAttribute("people", personDAO.index());
+        model.addAttribute("people", peopleService.findAll());
+
+        itemService.findByOwner(peopleService.findAll().get(1));
+        itemService.findByItemName("Item 2");
+        peopleService.test();
         return "people/index";
     }
 
     @GetMapping("/{id}")
     public String show(@PathVariable("id") int id, Model model) {
-        model.addAttribute("person", personDAO.show(id));
+        model.addAttribute("person", peopleService.findOne(id));
         return "people/show";
     }
 
@@ -45,26 +54,26 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "/people/new";
         }
-        personDAO.save(person);
+        peopleService.save(person);
         return "redirect:/people";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
-        model.addAttribute("person", personDAO.show(id));
+        model.addAttribute("person", peopleService.findOne(id));
         return "people/edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("person") @Valid Person person, BindingResult bindingResult, @PathVariable("id") int id) {
         if (bindingResult.hasErrors()) return "/people/edit";
-        personDAO.update(id, person);
+        peopleService.update(id, person);
         return "redirect:/people";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
-        personDAO.delete(id);
+        peopleService.delete(id);
         return "redirect:/people";
     }
 

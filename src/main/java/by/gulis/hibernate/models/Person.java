@@ -5,6 +5,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Person")
@@ -24,6 +25,9 @@ public class Person {
     @Email(message = "Email should be valid")
     @Column(name = "email")
     private String email;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Item> itemList;
 
 
     @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}",
@@ -86,5 +90,23 @@ public class Person {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public List<Item> getItemList() {
+        return itemList;
+    }
+
+    public void setItemList(List<Item> itemList) {
+        this.itemList = itemList;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                '}';
     }
 }
