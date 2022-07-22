@@ -1,10 +1,12 @@
 package by.gulis.hibernate.models;
 
 import org.hibernate.annotations.Cascade;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import javax.validation.constraints.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,6 +36,14 @@ public class Person {
             message = "Your address should be in this format: Country, City, Postal Code(6 digits)")
     private String address;
 
+    @Column(name = "date_of_birth")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date dateOfBirth;
+
+    @Column(name = "create_of")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createAt;
     public Person() {
     }
 
@@ -50,6 +60,22 @@ public class Person {
         this.name = name;
         this.age = age;
         this.email = email;
+    }
+
+    public Date getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Date getCreateAt() {
+        return createAt;
+    }
+
+    public void setCreateAt(Date createAt) {
+        this.createAt = createAt;
     }
 
     public int getId() {
